@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\Foryoucom\source\repos\윈도우프로그래밍_메탈슬러그\윈도우프로그래밍_메탈슬러그\main.cpp(74,16): warning C4244: 'return': 'WPARAM'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  윈도우프로그래밍_메탈슬러그.vcxproj -> C:\Users\Foryoucom\source\repos\윈도우프로그래밍_메탈슬러그\x64\Debug\윈도우프로그래밍_메탈슬러그.exe
