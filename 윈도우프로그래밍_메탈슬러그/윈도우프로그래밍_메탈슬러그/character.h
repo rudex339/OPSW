@@ -3,7 +3,7 @@
 #include <atlImage.h>
 class character {
 private:
-	int hp, damage, direct,speed,floating;
+	int hp, damage, direct,speed,floating,move_int;
 	POINT position;
 	
 public:
@@ -12,6 +12,7 @@ public:
 	POINT return_position();
 	void move_c(int moving);
 	int return_direct();
+	int MOVE_check(int check);
 };
 struct FRAME {
 	int x, y, wid, hei,up,left;

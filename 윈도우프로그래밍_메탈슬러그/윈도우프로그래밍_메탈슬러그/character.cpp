@@ -6,6 +6,8 @@ character::character() {
 	direct = 0;
 	speed = 0;
 	position.x=0; position.y = 0;
+	floating = 0;
+	move_int = 0;
 }
 void character::character_insert(int in_hp, int in_damage, int in_direct, int in_speed, int x, int y) {
 	hp = in_hp;
@@ -14,6 +16,7 @@ void character::character_insert(int in_hp, int in_damage, int in_direct, int in
 	speed = in_speed;
 	position.x = x; position.y = y;
 	floating = 0;
+	move_int = 1;
 }
 POINT character::return_position() {
 	return this->position;
@@ -21,12 +24,19 @@ POINT character::return_position() {
 void character::move_c(int moving) {
 	if(direct!=moving)
 	direct = moving;
-	//position.x += moving * 5;
+	position.x += moving;
 }
 int character::return_direct() {
 	return this->direct;
 }
-
+int character::MOVE_check(int check) {
+	if (check == 0)
+		return this->move_int;
+	else {
+		if (move_int)move_int = 0;
+		else move_int = 1;
+	}
+}
 
 player::player() {
 	character_insert(1,1,1,1,300,300);
@@ -73,7 +83,7 @@ player::player() {
 		NEW->next = new FRAME;
 		NEW->next->x = 508; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 30; NEW = NEW->next;
 		NEW->next = new FRAME;
-		NEW->next->x = 482; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 31; NEW->next = NEW;//땅에 닿을때까지 반복
+		NEW->next->x = 482; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 31; NEW->next->next = down[2];//땅에 닿을때까지 반복
 
 		NEW = new FRAME;//이동 점프 다리
 		NEW->x = 619; NEW->y = 1613; NEW->wid = 28; NEW->hei = 23;
@@ -85,17 +95,17 @@ player::player() {
 		NEW->next = new FRAME;
 		NEW->next->x = 720; NEW->next->y = 1603; NEW->next->wid = 30; NEW->next->hei = 17; NEW = NEW->next;
 		NEW->next = new FRAME;
-		NEW->next->x = 754;	 NEW->next->y = 1603; NEW->next->wid = 30; NEW->next->hei = 17; NEW->next = NEW;//땅에 닿을때까지 반복
+		NEW->next->x = 754;	 NEW->next->y = 1603; NEW->next->wid = 30; NEW->next->hei = 17;  NEW->next->next = down[3];//땅에 닿을때까지 반복
 
 		NEW = new FRAME;//정지 다리
 		NEW->x = 343; NEW->y = 1602; NEW->wid = 22; NEW->hei = 24;
-		this->down[4] = NEW;
-		NEW->next = new FRAME;
+		this->down[4] = NEW; NEW->left = 7; NEW->up = 6;
+		NEW->next = new FRAME; NEW->next->left = 9; NEW->next->up = 6;
 		NEW->next->x = 369; NEW->next->y = 1602; NEW->next->wid = 25; NEW->next->hei = 24; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 9; NEW->next->up = 6;
 		NEW->next->x = 398; NEW->next->y = 1602; NEW->next->wid = 25; NEW->next->hei = 24; NEW = NEW->next;
-		NEW->next = new FRAME;
-		NEW->next->x = 427; NEW->next->y = 1602; NEW->next->wid = 23; NEW->next->hei = 24; NEW->next = this->down[0];//끝나면 서있는 다리로
+		NEW->next = new FRAME; NEW->next->left = 7; NEW->next->up = 6;
+		NEW->next->x = 427; NEW->next->y = 1602; NEW->next->wid = 23; NEW->next->hei = 24; NEW->next->next = this->down[0];//끝나면 서있는 다리로
 	}
 	p_down = down[0];
 	this->up = new FRAME * [11];
@@ -108,7 +118,7 @@ player::player() {
 		NEW->next = new FRAME; NEW->next->left = 7; NEW->next->up = 20;
 		NEW->next->x = 149; NEW->next->y = 4; NEW->next->wid = 28; NEW->next->hei = 26; NEW = NEW->next;
 		NEW->next = new FRAME; NEW->next->left = 7; NEW->next->up = 20;
-		NEW->next->x = 181; NEW->next->y = 4; NEW->next->wid = 28; NEW->next->hei = 26; NEW = this->up[0];
+		NEW->next->x = 181; NEW->next->y = 4; NEW->next->wid = 28; NEW->next->hei = 26; NEW->next = this->up[0];
 
 		NEW = new FRAME;//달리는 상체
 		NEW->x = 215; NEW->y = 4; NEW->wid = 27; NEW->hei = 26;
@@ -146,11 +156,12 @@ player::player() {
 		NEW->next = new FRAME; NEW->next->left = 6; NEW->next->up = 20;
 		NEW->next->x = 726; NEW->next->y = 4; NEW->next->wid = 28; NEW->next->hei = 26; NEW = NEW->next;
 		NEW->next = new FRAME; NEW->next->left = 6; NEW->next->up = 20;
-		NEW->next->x = 758; NEW->next->y = 4; NEW->next->wid = 27; NEW->next->hei = 27; NEW = NEW->next;
+		NEW->next->x = 758; NEW->next->y = 4; NEW->next->wid = 27; NEW->next->hei = 27; NEW->next->next =up[1];
 
 	}
 	p_up = up[0];
 }
+
 void player::move(WPARAM wParam, int mode) {
 	if (mode == 0) {
 		switch (wParam) {
@@ -165,18 +176,23 @@ void player::move(WPARAM wParam, int mode) {
 
 			break;
 		case VK_LEFT:
-			if (return_direct() != -1)p_down = down[1];
+			if (MOVE_check(0)) { p_down = down[1];
+			MOVE_check(1);
+			}
 			move_c(-1);
 
 			break;
 		case VK_RIGHT:
-			if (return_direct() != 1)p_down = down[1];
+			if (MOVE_check(0)) {
+				p_down = down[1];
+				MOVE_check(1);
+			}
 			move_c(1);
 
 			break;
 		}
 	}
-	else if (mode == 0) {
+	else if (mode == 1) {
 		switch (wParam) {
 		case VK_UP:
 
@@ -189,11 +205,13 @@ void player::move(WPARAM wParam, int mode) {
 
 			break;
 		case VK_LEFT:
-			p_down = down[0];
+			MOVE_check(1);
+			p_down = down[4];
 
 			break;
 		case VK_RIGHT:
-			p_down = down[0];
+			MOVE_check(1);
+			p_down = down[4];
 
 			break;
 		}
@@ -224,21 +242,21 @@ void player::print_player(HDC hdc,RECT rt) {
 	chardc = CreateCompatibleDC(hdc);
 	SelectObject(chardc, hbit);
 	if (return_direct() == -1)
-		StretchBlt(chardc, x + p_down->left + player->p_up->left + 3, y, player->direct * wed, hei, memdc, x, y, wed, hei, SRCCOPY);
-	else if (player->direct == 1)
-		StretchBlt(chardc, x, y, player->direct * wed, hei, memdc, x, y, wed, hei, SRCCOPY);
-	player->sprite.AlphaBlend(chardc, player->position.x - player->p_down->left, player->position.y - player->p_down->top, player->p_down->wid, player->p_down->hei,
-		player->p_down->cut.x, player->p_down->cut.y, player->p_down->wid, player->p_down->hei);
-	player->sprite.AlphaBlend(chardc, player->position.x - player->p_up->left, player->position.y - player->p_up->top, player->p_up->wid, player->p_up->hei,
-		player->p_up->cut.x, player->p_up->cut.y, player->p_up->wid, player->p_up->hei);
+		StretchBlt(chardc, x + wed-1, y, return_direct() * wed, hei, hdc, x, y, wed, hei, SRCCOPY);
+	else if (return_direct() == 1)
+		StretchBlt(chardc, x, y, return_direct() * wed, hei, hdc, x, y, wed, hei, SRCCOPY);
+	sprite.AlphaBlend(chardc, return_position().x - p_down->left, return_position().y - p_down->up, p_down->wid, p_down->hei,
+		p_down->x, p_down->y, p_down->wid, p_down->hei);
+	sprite.AlphaBlend(chardc, return_position().x - p_up->left, return_position().y - p_up->up, p_up->wid, p_up->hei,
+		p_up->x, p_up->y, p_up->wid, p_up->hei);
 
-	if (player->direct == -1)
-		StretchBlt(memdc, x + player->p_down->left + player->p_up->left - 3, y, player->direct * wed, hei, chardc, x, y, wed, hei, SRCCOPY);
-	else if (player->direct == 1)
-		StretchBlt(memdc, x, y, player->direct * wed, hei, chardc, x, y, wed, hei, SRCCOPY);
+	if (return_direct() == -1)
+		StretchBlt(hdc, x + p_down->left + p_up->left, y, return_direct() * wed, hei, chardc, x, y, wed, hei, SRCCOPY);
+	else if (return_direct() == 1)
+		StretchBlt(hdc, x, y, return_direct() * wed, hei, chardc, x, y, wed, hei, SRCCOPY);
 
-	player->p_up = player->p_up->next;
-	player->p_down = player->p_down->next;
+	p_up = p_up->next;
+	p_down = p_down->next;
 	DeleteObject(hbit);
 	DeleteDC(chardc);
 }

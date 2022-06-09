@@ -51,7 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 
 	WndClass.lpszMenuName = NULL;
 
-	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, 0, 0, 800, 600, NULL, (HMENU)NULL, hInstance, NULL);
+	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU, 0, 0, 900, 600, NULL, (HMENU)NULL, hInstance, NULL);
 
 
 
@@ -120,9 +120,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		GetClientRect(hwnd, &rt);
 
 		hdc = BeginPaint(hwnd, &ps);
-		Rectangle(hdc, 300, 300, 305, 800);
+		Rectangle(hdc, 0, 0, rt.right, rt.bottom);
 		//memdc = CreateCompatibleDC(hdc);
-		p.print_player(hdc);
+		p.print_player(hdc,rt);
 		//BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
 		//DeleteDC(memdc);
 		EndPaint(hwnd, &ps);
