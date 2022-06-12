@@ -39,7 +39,7 @@ int character::MOVE_check(int check) {
 }
 
 player::player() {
-	character_insert(1,1,1,1,300,300);
+	character_insert(1,1,1,1,10,150);
 	this->sprite.Load(TEXT("sprite/player.png"));
 	this->sprite.SetTransparentColor(RGB(0, 0, 255));
 	FRAME* NEW;
@@ -217,11 +217,11 @@ void player::move(WPARAM wParam, int mode) {
 		}
 	}
 }
-void player::print_player(HDC hdc,RECT rt) {
+void player::print_player(HDC hdc,RECT *rt) {
 	HDC chardc;
 	int hei, wed, x, y;
 	HBITMAP hbit;
-
+	
 	y = return_position().y - p_up->up;
 	hei = p_up->up + p_down->hei - p_down->up;
 	if (p_up->left >= p_down->left) {
@@ -238,25 +238,27 @@ void player::print_player(HDC hdc,RECT rt) {
 	else {
 		wed += (p_down->wid - p_down->left);
 	}
-	hbit = CreateCompatibleBitmap(hdc, rt.right, rt.bottom);
+	hbit = CreateCompatibleBitmap(hdc, 900, 600);
 	chardc = CreateCompatibleDC(hdc);
 	SelectObject(chardc, hbit);
 	if (return_direct() == -1)
-		StretchBlt(chardc, x + wed-1, y, return_direct() * wed, hei, hdc, x, y, wed, hei, SRCCOPY);
+		StretchBlt(chardc, x + wed-1- rt->left, y, return_direct() * wed, hei, hdc, x- rt->left, y, wed, hei, SRCCOPY);
 	else if (return_direct() == 1)
-		StretchBlt(chardc, x, y, return_direct() * wed, hei, hdc, x, y, wed, hei, SRCCOPY);
-	sprite.AlphaBlend(chardc, return_position().x - p_down->left, return_position().y - p_down->up, p_down->wid, p_down->hei,
+		StretchBlt(chardc, x- rt->left, y, return_direct() * wed, hei, hdc, x - rt->left, y, wed, hei, SRCCOPY);
+	sprite.AlphaBlend(chardc, return_position().x - p_down->left - rt->left, return_position().y - p_down->up, p_down->wid, p_down->hei,
 		p_down->x, p_down->y, p_down->wid, p_down->hei);
-	sprite.AlphaBlend(chardc, return_position().x - p_up->left, return_position().y - p_up->up, p_up->wid, p_up->hei,
+	sprite.AlphaBlend(chardc, return_position().x - p_up->left - rt->left, return_position().y - p_up->up, p_up->wid, p_up->hei,
 		p_up->x, p_up->y, p_up->wid, p_up->hei);
 
 	if (return_direct() == -1)
-		StretchBlt(hdc, x + p_down->left + p_up->left, y, return_direct() * wed, hei, chardc, x, y, wed, hei, SRCCOPY);
+		StretchBlt(hdc, x + p_down->left + p_up->left- rt->left, y, return_direct() * wed, hei, chardc, x- rt->left, y, wed, hei, SRCCOPY);
 	else if (return_direct() == 1)
-		StretchBlt(hdc, x, y, return_direct() * wed, hei, chardc, x, y, wed, hei, SRCCOPY);
+		StretchBlt(hdc, x- rt->left, y, return_direct() * wed, hei, chardc, x- rt->left, y, wed, hei, SRCCOPY);
 
 	p_up = p_up->next;
 	p_down = p_down->next;
+	if (rt->left + rt->right / 2 < return_position().x)
+		rt->left += (return_position().x- rt->right / 2- rt->left);
 	DeleteObject(hbit);
 	DeleteDC(chardc);
 }

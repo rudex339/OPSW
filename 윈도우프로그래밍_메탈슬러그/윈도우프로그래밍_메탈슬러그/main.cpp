@@ -3,7 +3,7 @@
 #include <string.h>
 #include <random>
 #include "character.h"
-
+#include "screen.h"
 using namespace std;
 
 #define PI  3.14
@@ -75,8 +75,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 
 }
 
-
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	default_random_engine en(rd());
@@ -87,6 +85,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	static RECT rt;
 	static HDC hdc,memdc;
 	static player p;
+	static screen sc;
 	switch (uMsg) {
 	case WM_CREATE:
 		
@@ -122,7 +121,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		hdc = BeginPaint(hwnd, &ps);
 		Rectangle(hdc, 0, 0, rt.right, rt.bottom);
 		//memdc = CreateCompatibleDC(hdc);
-		p.print_player(hdc,rt);
+		sc.print_screen(hdc, &p,rt);
 		//BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
 		//DeleteDC(memdc);
 		EndPaint(hwnd, &ps);

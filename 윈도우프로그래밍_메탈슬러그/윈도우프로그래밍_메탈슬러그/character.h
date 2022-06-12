@@ -27,6 +27,6 @@ public:
 	player();
 	player(RECT rt);
 	void move(WPARAM wParam,int mode);
-	void print_player(HDC hdc,RECT rt);
+	void print_player(HDC hdc,RECT *rt);
 	void Animation();
 };
