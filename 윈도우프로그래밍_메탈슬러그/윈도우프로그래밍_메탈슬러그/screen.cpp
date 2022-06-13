@@ -17,7 +17,7 @@ void screen::print_screen(HDC hdc,RECT* rt_main) {
 	background.Draw(memdc, 0, 0, 300, 200, map_rt.left, map_rt.top, 300, 200);
 
 	p.print_player(memdc,&map_rt);
-
+	ground.print_line(memdc, map_rt);
 	back_start.x = 8 + (p.return_playerp().x / 3);
 	if (map_rt.left + map_rt.right >= beachx) {
 		map_rt.left = beachx - map_rt.right;

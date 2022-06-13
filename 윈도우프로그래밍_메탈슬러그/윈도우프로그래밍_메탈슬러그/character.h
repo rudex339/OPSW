@@ -13,6 +13,7 @@ public:
 	landing();
 	int crash_check(int x, int y, int wid, int hei, int px, int py);
 	int check_hei(int x, int y);
+	void print_line(HDC hdc, RECT rt);
 };
 
 class character {

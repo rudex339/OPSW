@@ -1,29 +1,30 @@
 #include "character.h"
+#include <math.h>
 //
 landing::landing() {
 	LINE* NEW;
 	NEW = new LINE; NEW->p.x = 0; NEW->p.y = 183; NEW->prev = NULL;  NEW->p2.x = 562; NEW->p2.y = 183; land = NEW;
 	NEW->next = new LINE; NEW->next->p.x = 562; NEW->next->p.y = 183; NEW->next->p2.x = 610; NEW->next->p2.y = 166; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 610; NEW->next->p.y = 166; NEW->next->p2.x = 767; NEW->next->p2.y = 135; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 609; NEW->next->p.y = 166; NEW->next->p2.x = 767; NEW->next->p2.y = 135; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 767; NEW->next->p.y = 135; NEW->next->p2.x = 822; NEW->next->p2.y = 129; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 765; NEW->next->p.y = 135; NEW->next->p2.x = 822; NEW->next->p2.y = 129; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 822; NEW->next->p.y = 129; NEW->next->p2.x = 855; NEW->next->p2.y = 187; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 820; NEW->next->p.y = 129; NEW->next->p2.x = 855; NEW->next->p2.y = 187; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 855; NEW->next->p.y = 187; NEW->next->p2.x = 980; NEW->next->p2.y = 189; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 853; NEW->next->p.y = 187; NEW->next->p2.x = 980; NEW->next->p2.y = 189; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 980; NEW->next->p.y = 158; NEW->next->p2.x = 1026; NEW->next->p2.y = 151; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 978; NEW->next->p.y = 158; NEW->next->p2.x = 1026; NEW->next->p2.y = 151; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 1026; NEW->next->p.y = 151; NEW->next->p2.x = 1081; NEW->next->p2.y = 152; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 1024; NEW->next->p.y = 151; NEW->next->p2.x = 1081; NEW->next->p2.y = 152; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 1081; NEW->next->p.y = 152; NEW->next->p2.x = 1125; NEW->next->p2.y = 186; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 1079; NEW->next->p.y = 152; NEW->next->p2.x = 1125; NEW->next->p2.y = 186; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 1125; NEW->next->p.y = 186; NEW->next->p2.x = 1290; NEW->next->p2.y = 194; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 1123; NEW->next->p.y = 186; NEW->next->p2.x = 1290; NEW->next->p2.y = 194; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 1290; NEW->next->p.y = 194; NEW->next->p2.x = 1420; NEW->next->p2.y = 180; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 1288; NEW->next->p.y = 194; NEW->next->p2.x = 1420; NEW->next->p2.y = 180; NEW->next->prev = NEW;
 	NEW = NEW->next;
-	NEW->next = new LINE; NEW->next->p.x = 1420; NEW->next->p.y = 180; NEW->next->p2.x = 1605; NEW->next->p2.y = 168; NEW->next->prev = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 1418; NEW->next->p.y = 180; NEW->next->p2.x = 1605; NEW->next->p2.y = 168; NEW->next->prev = NEW;
 	NEW = NEW->next;
 	NEW->next = NULL;
 
@@ -44,9 +45,9 @@ int landing::crash_check(int x, int y, int wid, int hei,int px,int py) {
 	}
 	float u, v;
 	float x1, y1, x2, y2, x3, y3, x4, y4;
-	x1 = x;
+	x1 = x+wid;
 	y1 = y;
-	x2 = x;
+	x2 = x+wid;
 	y2 = y + hei;
 	x3 = land->p.x;
 	y3 = land->p.y;
@@ -61,9 +62,9 @@ int landing::crash_check(int x, int y, int wid, int hei,int px,int py) {
 	if (u > 0 && u < 1 && v>0 && v < 1) {
 		return (y3 + v * (y4 - y3)) - y2;
 	}
-	x1 = x+wid;
+	x1 = x;
 
-	x2 = x+wid;
+	x2 = x;
 
 	u = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1));
 	if (u < 0)
@@ -91,7 +92,11 @@ int landing::check_hei(int x, int y) {
 
 		else break;
 	}
-	return (float)((land->p.y - land->p2.y) / (land->p.x - land->p2.x)) * (float)(x - land->p.x) + land->p.y-y;
+	return round((float)((land->p.y - land->p2.y) / (land->p.x - land->p2.x)) * (float)(x - land->p.x) + land->p.y-y);
+}
+void landing::print_line(HDC hdc, RECT rt) {
+	MoveToEx(hdc, land->p.x-rt.left, land->p.y, NULL);
+	LineTo(hdc, land->p2.x-rt.left, land->p2.y);
 }
 //
 character::character() {
@@ -379,7 +384,9 @@ void player::print_player(HDC hdc,RECT *rt) {
 		p_down->x, p_down->y, p_down->wid, p_down->hei);
 	sprite.AlphaBlend(chardc, return_position().x - p_up->left - rt->left, return_position().y - p_up->up, p_up->wid, p_up->hei,
 		p_up->x, p_up->y, p_up->wid, p_up->hei);
-
+	TCHAR a[10];
+	wsprintf(a, TEXT("%d"), M);
+	TextOut(chardc, return_position().x - rt->left, return_position().y, a, lstrlen(a));
 	if (return_direct() == -1)
 		StretchBlt(hdc, x + p_down->left + p_up->left- rt->left, y, return_direct() * wed, hei, chardc, x- rt->left, y, wed, hei, SRCCOPY);
 	else if (return_direct() == 1)
@@ -391,19 +398,22 @@ void player::print_player(HDC hdc,RECT *rt) {
 	DeleteDC(chardc);
 }
 void player::Animation(landing* ground) {
+	p_up = p_up->next;
+	p_down = p_down->next;
 	move_c(M);
-	if (ground->check_hei(return_position().x - p_down->left+ p_down->wid, return_position().y - p_down->up+ p_down->hei) > 3&& 
-		ground->check_hei(return_position().x - p_down->left, return_position().y - p_down->up + p_down->hei) > 3) {
+	if (ground->check_hei(return_position().x - p_down->left+ p_down->wid, return_position().y - p_down->up+25) > 10&& 
+		ground->check_hei(return_position().x - p_down->left, return_position().y - p_down->up + 25) > 10) {
 		if (change_float(1) == 0) {
 			change_float(0);
 		}
 	}
 	else  {
 		if (change_float(1) == 2) {
-			jump = 5;
+			jump = 10;
 			if (M != 0)
 				p_down = down[1];
 			else p_down = down[4];
+
 			change_float(0);
 		}
 	}
@@ -413,8 +423,7 @@ void player::Animation(landing* ground) {
 	}
 	move_y(jump);
 	move_y(ground->crash_check(return_position().x-p_down->left, return_position().y - p_down->up,p_down->wid, p_down->hei, return_position().x, return_position().y));
-	p_up = p_up->next;
-	p_down = p_down->next;
+	
 	if (change_float(1) == 1) {
 		change_float(2);
 		if (M != 0)
