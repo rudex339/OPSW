@@ -1,45 +1,165 @@
 #include "character.h"
+//
+landing::landing() {
+	LINE* NEW;
+	NEW = new LINE; NEW->p.x = 0; NEW->p.y = 183; NEW->prev = NULL;  NEW->p2.x = 562; NEW->p2.y = 183; land = NEW;
+	NEW->next = new LINE; NEW->next->p.x = 562; NEW->next->p.y = 183; NEW->next->p2.x = 610; NEW->next->p2.y = 166; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 610; NEW->next->p.y = 166; NEW->next->p2.x = 767; NEW->next->p2.y = 135; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 767; NEW->next->p.y = 135; NEW->next->p2.x = 822; NEW->next->p2.y = 129; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 822; NEW->next->p.y = 129; NEW->next->p2.x = 855; NEW->next->p2.y = 187; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 855; NEW->next->p.y = 187; NEW->next->p2.x = 980; NEW->next->p2.y = 189; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 980; NEW->next->p.y = 158; NEW->next->p2.x = 1026; NEW->next->p2.y = 151; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 1026; NEW->next->p.y = 151; NEW->next->p2.x = 1081; NEW->next->p2.y = 152; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 1081; NEW->next->p.y = 152; NEW->next->p2.x = 1125; NEW->next->p2.y = 186; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 1125; NEW->next->p.y = 186; NEW->next->p2.x = 1290; NEW->next->p2.y = 194; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 1290; NEW->next->p.y = 194; NEW->next->p2.x = 1420; NEW->next->p2.y = 180; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = new LINE; NEW->next->p.x = 1420; NEW->next->p.y = 180; NEW->next->p2.x = 1605; NEW->next->p2.y = 168; NEW->next->prev = NEW;
+	NEW = NEW->next;
+	NEW->next = NULL;
 
-character::character() {
-	hp = 0;
-	damage = 0;
-	direct = 0;
-	speed = 0;
-	position.x=0; position.y = 0;
-	floating = 0;
-	move_int = 0;
+	//NEW->next = new LINE; NEW->next->p.x = 980; NEW->next->p.y = 189; NEW->next->p2.x = 980; NEW->next->p2.y = 158; NEW->next->prev = NEW;
+	//NEW->next->situation = 1; NEW = NEW->next;
 }
-void character::character_insert(int in_hp, int in_damage, int in_direct, int in_speed, int x, int y) {
-	hp = in_hp;
-	damage = in_damage;
-	direct = in_direct;
-	speed = in_speed;
-	position.x = x; position.y = y;
-	floating = 0;
-	move_int = 1;
-}
-POINT character::return_position() {
-	return this->position;
-}
-void character::move_c(int moving) {
-	if(direct!=moving)
-	direct = moving;
-	position.x += moving;
-}
-int character::return_direct() {
-	return this->direct;
-}
-int character::MOVE_check(int check) {
-	if (check == 0)
-		return this->move_int;
-	else {
-		if (move_int)move_int = 0;
-		else move_int = 1;
+int landing::crash_check(int x, int y, int wid, int hei,int px,int py) {
+	while (1) {
+		if (px >= land->p2.x) {
+			if (land->next != NULL)
+				land = land->next;
+		}
+		else if (px < land->p.x) {
+			if (land->prev != NULL)
+				land = land->prev;
+		}
+		else break;
 	}
-}
+	float u, v;
+	float x1, y1, x2, y2, x3, y3, x4, y4;
+	x1 = x;
+	y1 = y;
+	x2 = x;
+	y2 = y + hei;
+	x3 = land->p.x;
+	y3 = land->p.y;
+	x4 = land->p2.x;
+	y4 = land->p2.y;
+	u = ((x4 - x3) * (y1 - y3) - (x1 - x3) * (y4 - y3)) / ((x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1));
+	if (u < 0)
+		u = -u;
+	v = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1));
+	if (v < 0)
+		v = -u;
+	if (u > 0 && u < 1 && v>0 && v < 1) {
+		return (y3 + v * (y4 - y3)) - y2;
+	}
+	x1 = x+wid;
 
+	x2 = x+wid;
+
+	u = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1));
+	if (u < 0)
+		u = -u;
+	v = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1));
+	if (v < 0)
+		v = -u;
+	if (u > 0 && u < 1 && v>0 && v < 1) {
+		return (y3 + v * (y4 - y3)) - y2;
+	}
+	return 0;
+}
+int landing::check_hei(int x, int y) {
+	while (1) {
+		if (x >= land->p2.x) {
+			if (land->next != NULL)
+				land = land->next;
+			else break;
+		}
+		else if (x < land->p.x) {
+			if (land->prev != NULL)
+				land = land->prev;
+			else break;
+		}
+
+		else break;
+	}
+	return (float)((land->p.y - land->p2.y) / (land->p.x - land->p2.x)) * (float)(x - land->p.x) + land->p.y-y;
+}
+//
+character::character() {
+		hp = 0;
+		damage = 0;
+		direct = 0;
+		speed = 0;
+		position.x = 0; position.y = 0;
+		floating = 0;
+
+		move_int = 0;
+	}
+void character::character_insert(int in_hp, int in_damage, int in_direct, int in_speed, int x, int y) {
+		hp = in_hp;
+		damage = in_damage;
+		direct = in_direct;
+		speed = in_speed;
+		position.x = x; position.y = y;
+		floating = 0;
+		move_int = 1;
+	}
+POINT character::return_position() {
+		return this->position;
+	}
+void character::move_c(int moving) {
+		if (moving != 0) {
+			if (direct != moving)
+				direct = moving;
+			position.x += moving * 5;
+		}
+	}
+void character::move_y(int moving) {
+		if (moving != 0) {
+			position.y += moving;
+		}
+	}
+int character::return_direct() {
+		return this->direct;
+	}
+int character::MOVE_check(int check) {
+		if (check == 0)
+			return this->move_int;
+		else {
+			if (move_int)move_int = 0;
+			else move_int = 1;
+		}
+	}
+int character::change_float(int mod) {
+	if (mod==1) {
+		return floating;
+	}
+	else if (mod == 2)
+		floating = 2;
+	else {
+		if (floating == 0)
+			floating = 1;
+		else
+			floating = 0;
+
+		
+	}
+	return 0;
+}
+//
 player::player() {
-	character_insert(1,1,1,1,10,150);
+	M = 0;
+	jump = 0;
+	character_insert(1,1,1,1,10,10);
 	this->sprite.Load(TEXT("sprite/player.png"));
 	this->sprite.SetTransparentColor(RGB(0, 0, 255));
 	FRAME* NEW;
@@ -65,37 +185,37 @@ player::player() {
 
 		NEW = new FRAME;//제자리 점프 다리
 		NEW->x = 456; NEW->y = 1595; NEW->wid = 22; NEW->hei = 31;
-		this->down[2] = NEW;
-		NEW->next = new FRAME;
+		this->down[2] = NEW; NEW->left = 7; NEW->up = 7;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 482; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 31; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 508; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 30; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 534; NEW->next->y = 1595; NEW->next->wid = 23; NEW->next->hei = 29; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 561; NEW->next->y = 1595; NEW->next->wid = 24; NEW->next->hei = 26; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 589; NEW->next->y = 1595; NEW->next->wid = 24; NEW->next->hei = 23; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 561; NEW->next->y = 1595; NEW->next->wid = 24; NEW->next->hei = 26; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 534; NEW->next->y = 1595; NEW->next->wid = 23; NEW->next->hei = 29; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 8; NEW->next->up = 7;
 		NEW->next->x = 508; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 30; NEW = NEW->next;
-		NEW->next = new FRAME;
-		NEW->next->x = 482; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 31; NEW->next->next = down[2];//땅에 닿을때까지 반복
+		NEW->next = new FRAME; NEW->next->left = 7;  NEW->next->up = 7;
+		NEW->next->x = 482; NEW->next->y = 1595; NEW->next->wid = 22; NEW->next->hei = 31; NEW->next->next = NEW->next;//땅에 닿을때까지 반복
 
 		NEW = new FRAME;//이동 점프 다리
-		NEW->x = 619; NEW->y = 1613; NEW->wid = 28; NEW->hei = 23;
-		this->down[3] = NEW;
-		NEW->next = new FRAME;
+		NEW->x = 619; NEW->y = 1603; NEW->wid = 28; NEW->hei = 23;
+		this->down[3] = NEW; NEW->left = 8; NEW->up = 3;
+		NEW->next = new FRAME; NEW->next->left = 11; NEW->next->up = 4;
 		NEW->next->x = 651; NEW->next->y = 1603; NEW->next->wid = 29; NEW->next->hei = 21; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 12; NEW->next->up = 3;
 		NEW->next->x = 683; NEW->next->y = 1603; NEW->next->wid = 33; NEW->next->hei = 19; NEW = NEW->next;
-		NEW->next = new FRAME;
+		NEW->next = new FRAME; NEW->next->left = 12; NEW->next->up = 3;
 		NEW->next->x = 720; NEW->next->y = 1603; NEW->next->wid = 30; NEW->next->hei = 17; NEW = NEW->next;
-		NEW->next = new FRAME;
-		NEW->next->x = 754;	 NEW->next->y = 1603; NEW->next->wid = 30; NEW->next->hei = 17;  NEW->next->next = down[3];//땅에 닿을때까지 반복
+		NEW->next = new FRAME; NEW->next->left = 12; NEW->next->up = 3;
+		NEW->next->x = 754;	 NEW->next->y = 1603; NEW->next->wid = 30; NEW->next->hei = 17;  NEW->next->next = NEW->next;//땅에 닿을때까지 반복
 
 		NEW = new FRAME;//정지 다리
 		NEW->x = 343; NEW->y = 1602; NEW->wid = 22; NEW->hei = 24;
@@ -161,7 +281,6 @@ player::player() {
 	}
 	p_up = up[0];
 }
-
 void player::move(WPARAM wParam, int mode) {
 	if (mode == 0) {
 		switch (wParam) {
@@ -179,7 +298,8 @@ void player::move(WPARAM wParam, int mode) {
 			if (MOVE_check(0)) { p_down = down[1];
 			MOVE_check(1);
 			}
-			move_c(-1);
+			if (change_float(1) == 0)
+			M = -1;
 
 			break;
 		case VK_RIGHT:
@@ -187,8 +307,14 @@ void player::move(WPARAM wParam, int mode) {
 				p_down = down[1];
 				MOVE_check(1);
 			}
-			move_c(1);
+			if (change_float(1) == 0)
+			M = 1;
 
+			break;
+		case 'c':
+		case 'C':
+			if (change_float(1) == 0)
+			jump = -10;
 			break;
 		}
 	}
@@ -205,12 +331,16 @@ void player::move(WPARAM wParam, int mode) {
 
 			break;
 		case VK_LEFT:
+			M = 0;
 			MOVE_check(1);
+			if (change_float(1) == 0)
 			p_down = down[4];
 
 			break;
 		case VK_RIGHT:
+			M = 0;
 			MOVE_check(1);
+			if (change_float(1) == 0)
 			p_down = down[4];
 
 			break;
@@ -255,10 +385,43 @@ void player::print_player(HDC hdc,RECT *rt) {
 	else if (return_direct() == 1)
 		StretchBlt(hdc, x- rt->left, y, return_direct() * wed, hei, chardc, x- rt->left, y, wed, hei, SRCCOPY);
 
-	p_up = p_up->next;
-	p_down = p_down->next;
-	if (rt->left + rt->right / 2 < return_position().x)
-		rt->left += (return_position().x- rt->right / 2- rt->left);
+	
+	
 	DeleteObject(hbit);
 	DeleteDC(chardc);
+}
+void player::Animation(landing* ground) {
+	move_c(M);
+	if (ground->check_hei(return_position().x - p_down->left+ p_down->wid, return_position().y - p_down->up+ p_down->hei) > 3&& 
+		ground->check_hei(return_position().x - p_down->left, return_position().y - p_down->up + p_down->hei) > 3) {
+		if (change_float(1) == 0) {
+			change_float(0);
+		}
+	}
+	else  {
+		if (change_float(1) == 2) {
+			jump = 5;
+			if (M != 0)
+				p_down = down[1];
+			else p_down = down[4];
+			change_float(0);
+		}
+	}
+	if (change_float(1) != 0) {
+		if(jump<10)
+		jump += 2;
+	}
+	move_y(jump);
+	move_y(ground->crash_check(return_position().x-p_down->left, return_position().y - p_down->up,p_down->wid, p_down->hei, return_position().x, return_position().y));
+	p_up = p_up->next;
+	p_down = p_down->next;
+	if (change_float(1) == 1) {
+		change_float(2);
+		if (M != 0)
+			p_down = down[3];
+		else p_down = down[2];
+	}
+}
+POINT player::return_playerp() {
+	return return_position();
 }

@@ -2,7 +2,6 @@
 #include <math.h>
 #include <string.h>
 #include <random>
-#include "character.h"
 #include "screen.h"
 using namespace std;
 
@@ -84,13 +83,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	PAINTSTRUCT ps;
 	static RECT rt;
 	static HDC hdc,memdc;
-	static player p;
 	static screen sc;
 	switch (uMsg) {
 	case WM_CREATE:
 		
 		GetClientRect(hwnd, &rt);
-		
 		SetTimer(hwnd, 1, 150, NULL);///1000/6010+5
 
 		break;
@@ -100,30 +97,28 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		break;
 
 	case WM_KEYDOWN:
-		p.move(wParam,0);
+		sc.player_contral(wParam,0);
 		break;
 	case WM_KEYUP:
-		p.move(wParam, 1);
+		sc.player_contral(wParam, 1);
 		break;
 	case WM_LBUTTONDOWN:
 
 		break;
 	case WM_TIMER:
 		
+		sc.animation();
 
 		InvalidateRgn(hwnd, NULL, false);
-
 		break;
 
 	case WM_PAINT:
 		GetClientRect(hwnd, &rt);
 
 		hdc = BeginPaint(hwnd, &ps);
-		Rectangle(hdc, 0, 0, rt.right, rt.bottom);
-		//memdc = CreateCompatibleDC(hdc);
-		sc.print_screen(hdc, &p,rt);
-		//BitBlt(hdc, 0, 0, rt.right, rt.bottom, memdc, 0, 0, SRCCOPY);
-		//DeleteDC(memdc);
+
+		sc.print_screen(hdc,&rt);
+		
 		EndPaint(hwnd, &ps);
 		break;
 
